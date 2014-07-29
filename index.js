@@ -1,7 +1,6 @@
 var es = require('event-stream');
 var ngDep = require('ng-dependencies');
 var toposort = require('toposort');
-var gutil = require('gulp-util');
 
 var ANGULAR_MODULE = 'ng';
 
