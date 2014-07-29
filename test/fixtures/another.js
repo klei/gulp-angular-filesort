@@ -1,2 +1,2 @@
 
-angular.module('another', ['module']);
+angular.module('another', ['module', 'yet-another']);

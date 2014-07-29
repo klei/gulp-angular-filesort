@@ -23,7 +23,10 @@ describe('gulp-angular-filesort', function () {
     var files = [
       fixture('fixtures/another.js'),
       fixture('fixtures/module-controller.js'),
-      fixture('fixtures/module.js')
+      fixture('fixtures/no-deps.js'),
+      fixture('fixtures/module.js'),
+      fixture('fixtures/dep-on-non-declared.js'),
+      fixture('fixtures/yet-another.js')
     ];
 
     var resultFiles = [];
@@ -36,14 +39,15 @@ describe('gulp-angular-filesort', function () {
     });
 
     stream.on('data', function (file) {
-      resultFiles.push(file);
+      resultFiles.push(file.relative);
     });
 
     stream.on('end', function () {
-      resultFiles.length.should.equal(3);
-      resultFiles[0].relative.should.equal('fixtures/module.js');
-      resultFiles[1].relative.should.equal('fixtures/another.js');
-      resultFiles[2].relative.should.equal('fixtures/module-controller.js');
+      resultFiles.length.should.equal(6);
+      resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
+      resultFiles.indexOf('fixtures/yet-another.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
+      resultFiles.indexOf('fixtures/another.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
+      resultFiles.indexOf('fixtures/another.js').should.be.above(resultFiles.indexOf('fixtures/yet-another.js'));
       done();
     });
 
