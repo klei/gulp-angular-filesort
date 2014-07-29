@@ -30,6 +30,6 @@
   "dependencies": {
     "event-stream": "^3.1.1",
     "ng-dependencies": "~0.1.1",
-    "toposort": "~0.2.10",
+    "toposort": "~0.2.10"
   }
 }
