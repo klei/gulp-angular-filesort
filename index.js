@@ -22,6 +22,9 @@ module.exports = function angularFilesort () {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
+          if (deps.modules && dep in deps.modules){
+            return;
+          }
           if (dep === ANGULAR_MODULE) {
             return;
           }
