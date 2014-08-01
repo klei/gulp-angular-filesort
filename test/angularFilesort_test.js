@@ -57,4 +57,36 @@ describe('gulp-angular-filesort', function () {
 
     stream.end();
   });
+
+  it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
+    var files = [
+      fixture('fixtures/circular.js')
+    ];
+
+    var resultFiles = [];
+    var error = null;
+
+    var stream = angularFilesort();
+
+    stream.on('error', function(err) {
+      error = err;
+    });
+
+    stream.on('data', function (file) {
+      resultFiles.push(file.relative);
+    });
+
+    stream.on('end', function () {
+      resultFiles.length.should.equal(1);
+      resultFiles[0].should.equal('fixtures/circular.js');
+      should.not.exist(error);
+      done();
+    });
+
+    files.forEach(function (file) {
+      stream.write(file);
+    });
+
+    stream.end();
+  });
 });
