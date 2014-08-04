@@ -22,7 +22,7 @@ module.exports = function angularFilesort () {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
-          if (deps.modules && dep in deps.modules){
+          if (isDependecyUsedInAnyDeclaration(dep, deps)) {
             return;
           }
           if (dep === ANGULAR_MODULE) {
@@ -59,3 +59,15 @@ module.exports = function angularFilesort () {
       this.emit('end');
     });
 };
+
+function isDependecyUsedInAnyDeclaration (dependency, ngDeps) {
+  if (!ngDeps.modules) {
+    return false;
+  }
+  if (dependency in ngDeps.modules) {
+    return true;
+  }
+  return Object.keys(ngDeps.modules).any(function (module) {
+    return ngDeps.modules[module].indexOf(dependency) > -1;
+  });
+}
