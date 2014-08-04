@@ -89,4 +89,38 @@ describe('gulp-angular-filesort', function () {
 
     stream.end();
   });
+
+  it('should not crash when a module is used inside a declaration even though it\'s before that module\'s declaration (Issue #7)', function (done) {
+    var files = [
+      fixture('fixtures/circular2.js'),
+      fixture('fixtures/circular3.js')
+    ];
+
+    var resultFiles = [];
+    var error = null;
+
+    var stream = angularFilesort();
+
+    stream.on('error', function(err) {
+      error = err;
+    });
+
+    stream.on('data', function (file) {
+      resultFiles.push(file.relative);
+    });
+
+    stream.on('end', function () {
+      resultFiles.length.should.equal(2);
+      resultFiles.should.contain('fixtures/circular2.js');
+      resultFiles.should.contain('fixtures/circular3.js');
+      should.not.exist(error);
+      done();
+    });
+
+    files.forEach(function (file) {
+      stream.write(file);
+    });
+
+    stream.end();
+  });
 });
