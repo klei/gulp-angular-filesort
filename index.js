@@ -17,7 +17,7 @@ module.exports = function angularFilesort () {
       try {
         deps = ngDep(file.contents);
       } catch (err) {
-        return this.emit('error', new PluginError(PLUGIN_NAME, "Error in compiling: " + file.relative + ": " + err.message));
+        return this.emit('error', new PluginError(PLUGIN_NAME, 'Error in parsing: "' + file.relative + '", ' + err.message));
       }
 
       if (deps.modules) {
