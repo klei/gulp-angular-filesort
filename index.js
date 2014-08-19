@@ -4,8 +4,8 @@ var toposort = require('toposort');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 
+var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';
-const PLUGIN_NAME = 'gulp-angular-filesort';
 
 module.exports = function angularFilesort () {
   var files = [];
