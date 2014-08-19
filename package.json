@@ -1,6 +1,6 @@
 {
   "name": "gulp-angular-filesort",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Automatically sort AngularJS app files depending on module definitions and usage",
   "main": "index.js",
   "scripts": {
@@ -24,10 +24,10 @@
   "homepage": "https://github.com/klei/gulp-angular-filesort",
   "devDependencies": {
     "chai": "~1.9.1",
-    "mocha": "~1.18.2",
-    "gulp-util": "~3.0.0"
+    "mocha": "~1.18.2"
   },
   "dependencies": {
+    "gulp-util": "^3.0.0",
     "event-stream": "^3.1.1",
     "ng-dependencies": "~0.1.1",
     "toposort": "~0.2.10"

@@ -1,7 +1,10 @@
 var es = require('event-stream');
 var ngDep = require('ng-dependencies');
 var toposort = require('toposort');
+var gutil = require('gulp-util');
+var PluginError = gutil.PluginError;
 
+var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';
 
 module.exports = function angularFilesort () {
@@ -10,7 +13,12 @@ module.exports = function angularFilesort () {
   var toSort = [];
 
   return es.through(function collectFilesToSort (file) {
-      var deps = ngDep(file.contents);
+      var deps;
+      try {
+        deps = ngDep(file.contents);
+      } catch (err) {
+        return this.emit('error', new PluginError(PLUGIN_NAME, 'Error in parsing: "' + file.relative + '", ' + err.message));
+      }
 
       if (deps.modules) {
         // Store references to each file with a declaration:
