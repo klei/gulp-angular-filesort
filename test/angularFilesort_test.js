@@ -21,13 +21,13 @@ describe('gulp-angular-filesort', function () {
   it('should sort file with a module definition before files that uses it', function (done) {
 
     var files = [
-      fixture('fixtures/another-factory.js'),
-      fixture('fixtures/another.js'),
-      fixture('fixtures/module-controller.js'),
-      fixture('fixtures/no-deps.js'),
-      fixture('fixtures/module.js'),
-      fixture('fixtures/dep-on-non-declared.js'),
-      fixture('fixtures/yet-another.js')
+      fixture(path.join('fixtures', 'another-factory.js')),
+      fixture(path.join('fixtures', 'another.js')),
+      fixture(path.join('fixtures', 'module-controller.js')),
+      fixture(path.join('fixtures', 'no-deps.js')),
+      fixture(path.join('fixtures', 'module.js')),
+      fixture(path.join('fixtures', 'dep-on-non-declared.js')),
+      fixture(path.join('fixtures', 'yet-another.js'))
     ];
 
     var resultFiles = [];
@@ -45,9 +45,9 @@ describe('gulp-angular-filesort', function () {
 
     stream.on('end', function () {
       resultFiles.length.should.equal(7);
-      resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
-      resultFiles.indexOf('fixtures/yet-another.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
-      resultFiles.indexOf('fixtures/another-factory.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
+      resultFiles.indexOf(path.join('fixtures', 'module-controller.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'module.js')));
+      resultFiles.indexOf(path.join('fixtures', 'yet-another.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'another.js')));
+      resultFiles.indexOf(path.join('fixtures', 'another-factory.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'another.js')));
       done();
     });
 
@@ -60,7 +60,7 @@ describe('gulp-angular-filesort', function () {
 
   it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
     var files = [
-      fixture('fixtures/circular.js')
+      fixture(path.join('fixtures', 'circular.js'))
     ];
 
     var resultFiles = [];
@@ -78,7 +78,7 @@ describe('gulp-angular-filesort', function () {
 
     stream.on('end', function () {
       resultFiles.length.should.equal(1);
-      resultFiles[0].should.equal('fixtures/circular.js');
+      resultFiles[0].should.equal(path.join('fixtures', 'circular.js'));
       should.not.exist(error);
       done();
     });
@@ -92,8 +92,8 @@ describe('gulp-angular-filesort', function () {
 
   it('should not crash when a module is used inside a declaration even though it\'s before that module\'s declaration (Issue #7)', function (done) {
     var files = [
-      fixture('fixtures/circular2.js'),
-      fixture('fixtures/circular3.js')
+      fixture(path.join('fixtures', 'circular2.js')),
+      fixture(path.join('fixtures', 'circular3.js'))
     ];
 
     var resultFiles = [];
@@ -111,8 +111,8 @@ describe('gulp-angular-filesort', function () {
 
     stream.on('end', function () {
       resultFiles.length.should.equal(2);
-      resultFiles.should.contain('fixtures/circular2.js');
-      resultFiles.should.contain('fixtures/circular3.js');
+      resultFiles.should.contain(path.join('fixtures', 'circular2.js'));
+      resultFiles.should.contain(path.join('fixtures', 'circular3.js'));
       should.not.exist(error);
       done();
     });
