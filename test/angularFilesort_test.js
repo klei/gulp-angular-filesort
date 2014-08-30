@@ -123,4 +123,42 @@ describe('gulp-angular-filesort', function () {
 
     stream.end();
   });
+
+  it('should sort CoffeeScript and JavaScript', function (done) {
+    var files = [
+      fixture(path.join('fixtures', 'coffee-module.coffee')),
+      fixture(path.join('fixtures', 'another-factory.js')),
+      fixture(path.join('fixtures', 'module.js')),
+      fixture(path.join('fixtures', 'yet-another.js')),
+      fixture(path.join('fixtures', 'another.js'))
+    ];
+
+    var resultFiles = [];
+    var error = null;
+
+    var stream = angularFilesort();
+
+    stream.on('error', function(err) {
+      error = err;
+    });
+
+    stream.on('data', function (file) {
+      resultFiles.push(file.relative);
+    });
+
+    stream.on('end', function () {
+      resultFiles.length.should.equal(5);
+      resultFiles.indexOf(path.join('fixtures', 'yet-another.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'coffee-module.js')));
+      resultFiles.indexOf(path.join('fixtures', 'yet-another.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'another.js')));
+      resultFiles.indexOf(path.join('fixtures', 'module.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'another.js')));
+      resultFiles.indexOf(path.join('fixtures', 'another-factory.js')).should.be.above(resultFiles.indexOf(path.join('fixtures', 'another.js')));
+      done();
+    });
+
+    files.forEach(function (file) {
+      stream.write(file);
+    });
+
+    stream.end();
+  });
 });
