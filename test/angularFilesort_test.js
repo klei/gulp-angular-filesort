@@ -1,13 +1,13 @@
 /* jshint camelcase: false, strict: false */
 /* global describe, it */
 var chai = require('chai'),
-    should = chai.should(),
-    gutil = require('gulp-util'),
-    fs = require('fs'),
-    path = require('path'),
-    angularFilesort = require('../.');
+  should = chai.should(),
+  gutil = require('gulp-util'),
+  fs = require('fs'),
+  path = require('path'),
+  angularFilesort = require('../.');
 
-function fixture (file) {
+function fixture(file) {
   var filepath = path.join(__dirname, file);
   return new gutil.File({
     path: filepath,
@@ -15,6 +15,30 @@ function fixture (file) {
     base: __dirname,
     contents: fs.readFileSync(filepath)
   });
+}
+
+function sort(files, checkResults) {
+  var resultFiles = [];
+
+  var stream = angularFilesort();
+
+  stream.on('error', function (err) {
+    done(err);
+  });
+
+  stream.on('data', function (file) {
+    resultFiles.push(file.relative);
+  });
+
+  stream.on('end', function () {
+    checkResults(resultFiles);
+  });
+
+  files.forEach(function (file) {
+    stream.write(file);
+  });
+
+  stream.end();
 }
 
 describe('gulp-angular-filesort', function () {
@@ -30,32 +54,14 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/yet-another.js')
     ];
 
-    var resultFiles = [];
-
-    var stream = angularFilesort();
-
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (file) {
-      resultFiles.push(file.relative);
-    });
-
-    stream.on('end', function () {
+    sort(files, function (resultFiles) {
       resultFiles.length.should.equal(7);
       resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
       resultFiles.indexOf('fixtures/yet-another.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
       resultFiles.indexOf('fixtures/another-factory.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
       done();
-    });
+    })
 
-    files.forEach(function (file) {
-      stream.write(file);
-    });
-
-    stream.end();
   });
 
   it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
@@ -63,31 +69,12 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/circular.js')
     ];
 
-    var resultFiles = [];
-    var error = null;
-
-    var stream = angularFilesort();
-
-    stream.on('error', function(err) {
-      error = err;
-    });
-
-    stream.on('data', function (file) {
-      resultFiles.push(file.relative);
-    });
-
-    stream.on('end', function () {
+    sort(files, function (resultFiles) {
       resultFiles.length.should.equal(1);
       resultFiles[0].should.equal('fixtures/circular.js');
-      should.not.exist(error);
       done();
-    });
+    })
 
-    files.forEach(function (file) {
-      stream.write(file);
-    });
-
-    stream.end();
   });
 
   it('should not crash when a module is used inside a declaration even though it\'s before that module\'s declaration (Issue #7)', function (done) {
@@ -96,31 +83,12 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/circular3.js')
     ];
 
-    var resultFiles = [];
-    var error = null;
-
-    var stream = angularFilesort();
-
-    stream.on('error', function(err) {
-      error = err;
-    });
-
-    stream.on('data', function (file) {
-      resultFiles.push(file.relative);
-    });
-
-    stream.on('end', function () {
+    sort(files, function (resultFiles) {
       resultFiles.length.should.equal(2);
       resultFiles.should.contain('fixtures/circular2.js');
       resultFiles.should.contain('fixtures/circular3.js');
-      should.not.exist(error);
       done();
-    });
+    })
 
-    files.forEach(function (file) {
-      stream.write(file);
-    });
-
-    stream.end();
   });
 });
