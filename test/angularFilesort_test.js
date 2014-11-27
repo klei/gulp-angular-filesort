@@ -7,23 +7,28 @@ var chai = require('chai'),
   path = require('path'),
   angularFilesort = require('../.');
 
-function fixture(file) {
+function fixture(file, config) {
   var filepath = path.join(__dirname, file);
   return new gutil.File({
     path: filepath,
     cwd: __dirname,
     base: __dirname,
-    contents: fs.readFileSync(filepath)
+    contents: config && config.withoutContents ? undefined : fs.readFileSync(filepath)
   });
 }
 
-function sort(files, checkResults) {
+function sort(files, checkResults, hadleError) {
   var resultFiles = [];
 
   var stream = angularFilesort();
 
   stream.on('error', function (err) {
-    done(err);
+    if (hadleError) {
+      hadleError(err);
+    } else {
+      should.exist(err);
+      done(err);
+    }
   });
 
   stream.on('data', function (file) {
@@ -90,5 +95,28 @@ describe('gulp-angular-filesort', function () {
       done();
     })
 
+  });
+
+  it('fails for not read file', function (done) {
+    var files = [
+      fixture('fake.js', {withoutContents: true})
+    ];
+
+    sort(files, function () {
+    }, function (err) {
+      should.exist(err);
+      done()
+    })
+  });
+
+  it('does not fail for empty file', function (done) {
+    var files = [
+      fixture('fixtures/empty.js')
+    ];
+
+    sort(files, function (resultFiles) {
+      resultFiles.should.eql(['fixtures/empty.js'])
+      done();
+    })
   });
 });
