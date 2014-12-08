@@ -13,6 +13,10 @@ module.exports = function angularFilesort () {
   var toSort = [];
 
   return es.through(function collectFilesToSort (file) {
+      if(!file.contents) {
+        return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" without content. You have to read it with gulp.src(..)'));
+      }
+
       var deps;
       try {
         deps = ngDep(file.contents);
