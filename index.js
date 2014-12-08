@@ -1,7 +1,9 @@
+var coffee = require('coffee-script');
 var es = require('event-stream');
 var ngDep = require('ng-dependencies');
 var toposort = require('toposort');
 var gutil = require('gulp-util');
+var path = require('path');
 var PluginError = gutil.PluginError;
 
 var PLUGIN_NAME = 'gulp-angular-filesort';
@@ -15,6 +17,9 @@ module.exports = function angularFilesort () {
   return es.through(function collectFilesToSort (file) {
       var deps;
       try {
+        if (path.extname(file.path) === '.coffee') {
+          file.contents = new Buffer(coffee.compile(file.contents.toString('utf8')));
+        }
         deps = ngDep(file.contents);
       } catch (err) {
         return this.emit('error', new PluginError(PLUGIN_NAME, 'Error in parsing: "' + file.relative + '", ' + err.message));

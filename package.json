@@ -27,8 +27,9 @@
     "mocha": "~1.18.2"
   },
   "dependencies": {
-    "gulp-util": "^3.0.0",
+    "coffee-script": "^1.8.0",
     "event-stream": "^3.1.1",
+    "gulp-util": "^3.0.0",
     "ng-dependencies": "~0.1.1",
     "toposort": "~0.2.10"
   }
