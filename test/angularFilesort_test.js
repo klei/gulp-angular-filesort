@@ -69,6 +69,30 @@ describe('gulp-angular-filesort', function () {
 
   });
 
+  it('should sort the same set of files the same way independently of the order they are sent', function (done) {
+
+    var files = [
+      fixture('fixtures/another-factory.js'),
+      fixture('fixtures/another.js'),
+      fixture('fixtures/module-controller.js'),
+      fixture('fixtures/no-deps.js'),
+      fixture('fixtures/module.js'),
+      fixture('fixtures/dep-on-non-declared.js'),
+      fixture('fixtures/yet-another.js')
+    ];
+
+    sort(files, function (resultFiles) {
+      resultFiles.length.should.equal(7);
+      files.reverse();
+      sort(files, function (resultFiles2) {
+        resultFiles2.length.should.equal(7);
+        resultFiles2.should.deep.equal(resultFiles);
+        done();
+      })
+    })
+
+  });
+
   it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
     var files = [
       fixture('fixtures/circular.js')

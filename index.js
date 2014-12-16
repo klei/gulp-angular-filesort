@@ -34,7 +34,7 @@ module.exports = function angularFilesort () {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
-          if (isDependecyUsedInAnyDeclaration(dep, deps)) {
+          if (isDependencyUsedInAnyDeclaration(dep, deps)) {
             return;
           }
           if (dep === ANGULAR_MODULE) {
@@ -61,6 +61,11 @@ module.exports = function angularFilesort () {
         }
       }
 
+      // Sort `files` per path so files with same tree position after toposort are always sent back in the same order
+      files.sort(function(f1, f2) {
+        return f1.path < f2.path;
+      });
+
       // Sort `files` with `toSort` as dependency tree:
       toposort.array(files, toSort)
         .reverse()
@@ -72,7 +77,7 @@ module.exports = function angularFilesort () {
     });
 };
 
-function isDependecyUsedInAnyDeclaration (dependency, ngDeps) {
+function isDependencyUsedInAnyDeclaration (dependency, ngDeps) {
   if (!ngDeps.modules) {
     return false;
   }
