@@ -79,7 +79,7 @@ function isDependecyUsedInAnyDeclaration (dependency, ngDeps) {
   if (dependency in ngDeps.modules) {
     return true;
   }
-  return Object.keys(ngDeps.modules).any(function (module) {
+  return Object.keys(ngDeps.modules).some(function (module) {
     return ngDeps.modules[module].indexOf(dependency) > -1;
   });
 }
