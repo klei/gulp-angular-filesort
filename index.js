@@ -18,6 +18,14 @@ module.exports = function angularFilesort () {
       }
 
       var deps;
+
+	  // prevent read errors for non-js files
+	  if (!file.relative.match(/.+\.js$/)) {
+		  // still need to add the file though
+		  files.push(file);
+		  return;
+	  }
+
       try {
         deps = ngDep(file.contents);
       } catch (err) {
