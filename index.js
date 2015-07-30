@@ -12,16 +12,16 @@ module.exports = function angularFilesort (options) {
   var start = [];
   var angmods = {};
   var toSort = [];
-  var putatstart = false;
-  if (typeof options != 'undefined' && typeof options.putatstart != 'undefined') {
-    putatstart = new RegExp(options.putatstart, 'i');
+  var exclude = false;
+  if (typeof options != 'undefined' && typeof options.exclude != 'undefined') {
+    exclude = new RegExp(options.exclude, 'i');
   }
 
   return es.through(function collectFilesToSort (file) {
       if(!file.contents) {
         return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" without content. You have to read it with gulp.src(..)'));
       }
-      if (putatstart && file.path.match(putatstart)) {
+      if (exclude && file.path.match(exclude)) {
         start.push(file);
         return;
       }
