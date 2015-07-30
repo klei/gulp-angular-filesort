@@ -7,16 +7,24 @@ var PluginError = gutil.PluginError;
 var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';
 
-module.exports = function angularFilesort () {
+module.exports = function angularFilesort (options) {
   var files = [];
+  var start = [];
   var angmods = {};
   var toSort = [];
+  var putatstart = false;
+  if (typeof options != 'undefined' && typeof options.putatstart != 'undefined') {
+    putatstart = new RegExp(options.putatstart, 'i');
+  }
 
   return es.through(function collectFilesToSort (file) {
       if(!file.contents) {
         return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" without content. You have to read it with gulp.src(..)'));
       }
-
+      if (putatstart && file.path.match(putatstart)) {
+        start.push(file);
+        return;
+      }
       var deps;
       try {
         deps = ngDep(file.contents);
@@ -60,7 +68,10 @@ module.exports = function angularFilesort () {
           toSort.splice(i--, 1);
         }
       }
-
+      //first emit start files
+      start.forEach(function(file) {
+        this.emit('data', file);
+      }.bind(this));
       // Sort `files` with `toSort` as dependency tree:
       toposort.array(files, toSort)
         .reverse()
