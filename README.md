@@ -26,6 +26,25 @@ gulp.src('./src/app/index.html')
   ))
   .pipe(gulp.dest('./build'));
 ```
+Using the option to exclude files
+
+```javascript
+var angularFilesort = require('gulp-angular-filesort'),
+    inject = require('gulp-inject');
+
+gulp.src('./src/app/index.html')
+  .pipe(inject(
+    gulp.src(['./src/app/**/*.js']).pipe(angularFilesort({exclude:'src/app/.*test*'}))
+  ))
+  .pipe(gulp.dest('./build'));
+```
+
+### Options
+An opject with options can be passed into angular-filesort.
+
+#### exclude
+The exclude option takes a string that will be used to create a regular expression. If a file path matches
+this expression, it will not be processed and put at the beginning of the stream.
 
 **NOTE** Do not use the `read` option for `gulp.src`! This plugin analyzes the contents of each file to determine sort order.
 
