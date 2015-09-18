@@ -62,11 +62,15 @@ module.exports = function angularFilesort () {
       }
 
       // Sort `files` with `toSort` as dependency tree:
-      toposort.array(files, toSort)
-        .reverse()
-        .forEach(function (file) {
-          this.emit('data', file);
-        }.bind(this));
+      var sorted = toposort.array(files, toSort);
+
+      if(toSort.length){
+        sorted.reverse()
+      }
+
+      sorted.forEach(function (file) {
+        this.emit('data', file);
+      }.bind(this));
 
       this.emit('end');
     });
