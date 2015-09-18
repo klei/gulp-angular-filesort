@@ -11,6 +11,7 @@ module.exports = function angularFilesort () {
   var files = [];
   var angmods = {};
   var toSort = [];
+  var dependencyUndefined = false;
 
   return es.through(function collectFilesToSort (file) {
       if(!file.contents) {
@@ -34,6 +35,10 @@ module.exports = function angularFilesort () {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
+          if(dep == undefined){
+            dependencyUndefined = true;
+            return;
+          }
           if (isDependecyUsedInAnyDeclaration(dep, deps)) {
             return;
           }
@@ -62,11 +67,15 @@ module.exports = function angularFilesort () {
       }
 
       // Sort `files` with `toSort` as dependency tree:
-      toposort.array(files, toSort)
-        .reverse()
-        .forEach(function (file) {
-          this.emit('data', file);
-        }.bind(this));
+      var sorted = toposort.array(files, toSort);
+
+      if(toSort.length || dependencyUndefined){
+        sorted.reverse()
+      }
+
+      sorted.forEach(function (file) {
+        this.emit('data', file);
+      }.bind(this));
 
       this.emit('end');
     });
