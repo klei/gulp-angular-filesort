@@ -42,7 +42,7 @@ module.exports = function angularFilesort (options) {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
-          if (isDependecyUsedInAnyDeclaration(dep, deps)) {
+          if (isDependencyUsedInAnyDeclaration(dep, deps)) {
             return;
           }
           if (dep === ANGULAR_MODULE) {
@@ -68,6 +68,12 @@ module.exports = function angularFilesort (options) {
           toSort.splice(i--, 1);
         }
       }
+      // sort the start files alphabetically
+      start.sort(function(a, b) {
+          if(a.path < b.path) return -1;
+          if(a.path > b.path) return 1;
+          return 0;
+      });
       //first emit start files
       start.forEach(function(file) {
         this.emit('data', file);
@@ -83,7 +89,7 @@ module.exports = function angularFilesort (options) {
     });
 };
 
-function isDependecyUsedInAnyDeclaration (dependency, ngDeps) {
+function isDependencyUsedInAnyDeclaration (dependency, ngDeps) {
   if (!ngDeps.modules) {
     return false;
   }
