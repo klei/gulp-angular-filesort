@@ -17,14 +17,14 @@ function fixture(file, config) {
   });
 }
 
-function sort(files, checkResults, hadleError) {
+function sort(files, options, checkResults, handleError) {
   var resultFiles = [];
 
-  var stream = angularFilesort();
+  var stream = angularFilesort(options);
 
   stream.on('error', function (err) {
-    if (hadleError) {
-      hadleError(err);
+    if (handleError) {
+      handleError(err);
     } else {
       should.exist(err);
       done(err);
@@ -59,7 +59,7 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/yet-another.js')
     ];
 
-    sort(files, function (resultFiles) {
+    sort(files, {}, function (resultFiles) {
       resultFiles.length.should.equal(7);
       resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
       resultFiles.indexOf('fixtures/yet-another.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
@@ -74,7 +74,7 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/circular.js')
     ];
 
-    sort(files, function (resultFiles) {
+    sort(files, {}, function (resultFiles) {
       resultFiles.length.should.equal(1);
       resultFiles[0].should.equal('fixtures/circular.js');
       done();
@@ -88,7 +88,7 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/circular3.js')
     ];
 
-    sort(files, function (resultFiles) {
+    sort(files, {}, function (resultFiles) {
       resultFiles.length.should.equal(2);
       resultFiles.should.contain('fixtures/circular2.js');
       resultFiles.should.contain('fixtures/circular3.js');
@@ -102,7 +102,7 @@ describe('gulp-angular-filesort', function () {
       fixture('fake.js', {withoutContents: true})
     ];
 
-    sort(files, function () {
+    sort(files, {}, function () {
     }, function (err) {
       should.exist(err);
       done()
@@ -114,8 +114,28 @@ describe('gulp-angular-filesort', function () {
       fixture('fixtures/empty.js')
     ];
 
-    sort(files, function (resultFiles) {
-      resultFiles.should.eql(['fixtures/empty.js'])
+    sort(files, {}, function (resultFiles) {
+      resultFiles.should.eql(['fixtures/empty.js']);
+      done();
+    })
+  });
+
+  it('exclude should work and sort the excluded files', function (done) {
+    var files = [
+      fixture('fixtures/another.js'),
+      fixture('fixtures/dep-on-non-declared.js'),
+      fixture('fixtures/circular3.js'),
+      fixture('fixtures/circular2.js'),
+      fixture('fixtures/circular.js'),
+      fixture('fixtures/no-deps.js'),
+      fixture('fixtures/empty.js')
+    ];
+
+    sort(files, {exclude: ".*circular.*"}, function (resultFiles) {
+      resultFiles.length.should.equal(7);
+      resultFiles[0].should.equal('fixtures/circular.js');
+      resultFiles[1].should.equal('fixtures/circular2.js');
+      resultFiles[2].should.equal('fixtures/circular3.js');
       done();
     })
   });

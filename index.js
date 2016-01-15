@@ -7,16 +7,24 @@ var PluginError = gutil.PluginError;
 var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';
 
-module.exports = function angularFilesort () {
+module.exports = function angularFilesort (options) {
   var files = [];
+  var start = [];
   var angmods = {};
   var toSort = [];
+  var exclude = false;
+  if (typeof options != 'undefined' && typeof options.exclude != 'undefined') {
+    exclude = new RegExp(options.exclude, 'i');
+  }
 
   return es.through(function collectFilesToSort (file) {
       if(!file.contents) {
         return this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" without content. You have to read it with gulp.src(..)'));
       }
-
+      if (exclude && file.path.match(exclude)) {
+        start.push(file);
+        return;
+      }
       var deps;
       try {
         deps = ngDep(file.contents);
@@ -34,7 +42,7 @@ module.exports = function angularFilesort () {
       if (deps.dependencies) {
         // Add each file with dependencies to the array to sort:
         deps.dependencies.forEach(function (dep) {
-          if (isDependecyUsedInAnyDeclaration(dep, deps)) {
+          if (isDependencyUsedInAnyDeclaration(dep, deps)) {
             return;
           }
           if (dep === ANGULAR_MODULE) {
@@ -60,7 +68,16 @@ module.exports = function angularFilesort () {
           toSort.splice(i--, 1);
         }
       }
-
+      // sort the start files alphabetically
+      start.sort(function(a, b) {
+          if(a.path < b.path) return -1;
+          if(a.path > b.path) return 1;
+          return 0;
+      });
+      //first emit start files
+      start.forEach(function(file) {
+        this.emit('data', file);
+      }.bind(this));
       // Sort `files` with `toSort` as dependency tree:
       toposort.array(files, toSort)
         .reverse()
@@ -72,7 +89,7 @@ module.exports = function angularFilesort () {
     });
 };
 
-function isDependecyUsedInAnyDeclaration (dependency, ngDeps) {
+function isDependencyUsedInAnyDeclaration (dependency, ngDeps) {
   if (!ngDeps.modules) {
     return false;
   }
