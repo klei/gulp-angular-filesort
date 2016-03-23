@@ -1,5 +1,13 @@
 # gulp-angular-filesort [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
+---
+
+## WARNING: Considering this for new apps? Don't!
+
+**Use something like [Browserify](http://browserify.org/) or [Webpack](https://webpack.github.io/) instead!**
+
+---
+
 > Automatically sort AngularJS app files depending on module definitions and usage
 
 Used in conjunction with [`gulp-inject`](https://www.npmjs.org/package/gulp-inject) to inject your AngularJS application files (scripts) in a correct order, to get rid of all `Uncaught Error: [$injector:modulerr]`.  To work correctly, each angular file needs to have a uniquely named module and setter syntax (with the brackets), i.e. `angular.module('myModule', [])`.
