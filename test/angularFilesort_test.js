@@ -17,14 +17,14 @@ function fixture(file, config) {
   });
 }
 
-function sort(files, checkResults, hadleError) {
+function sort(files, checkResults, handleError) {
   var resultFiles = [];
 
   var stream = angularFilesort();
 
   stream.on('error', function (err) {
-    if (hadleError) {
-      hadleError(err);
+    if (handleError) {
+      handleError(err);
     } else {
       should.exist(err);
       done(err);
@@ -48,7 +48,6 @@ function sort(files, checkResults, hadleError) {
 
 describe('gulp-angular-filesort', function () {
   it('should sort file with a module definition before files that uses it', function (done) {
-
     var files = [
       fixture('fixtures/another-factory.js'),
       fixture('fixtures/another.js'),
@@ -66,7 +65,25 @@ describe('gulp-angular-filesort', function () {
       resultFiles.indexOf('fixtures/another-factory.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
       done();
     })
+  });
 
+  it('should sort files alphabetically when no ordering is required', function (done) {
+      var files = [
+          fixture('fixtures/module.js'),
+          fixture('fixtures/circular3.js'),
+          fixture('fixtures/module-controller.js'),
+          fixture('fixtures/circular.js'),
+          fixture('fixtures/circular2.js'),
+      ];
+
+      sort(files, function (resultFiles) {
+          resultFiles.length.should.equal(5);
+          resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
+          resultFiles.indexOf('fixtures/module.js').should.be.above(resultFiles.indexOf('fixtures/circular.js'));
+          resultFiles.indexOf('fixtures/circular3.js').should.be.above(resultFiles.indexOf('fixtures/circular2.js'));
+          resultFiles.indexOf('fixtures/circular3.js').should.be.above(resultFiles.indexOf('fixtures/circular.js'));
+          done();
+      })
   });
 
   it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
@@ -79,7 +96,6 @@ describe('gulp-angular-filesort', function () {
       resultFiles[0].should.equal('fixtures/circular.js');
       done();
     })
-
   });
 
   it('should not crash when a module is used inside a declaration even though it\'s before that module\'s declaration (Issue #7)', function (done) {
@@ -94,7 +110,6 @@ describe('gulp-angular-filesort', function () {
       resultFiles.should.contain('fixtures/circular3.js');
       done();
     })
-
   });
 
   it('fails for not read file', function (done) {
