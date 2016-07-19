@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "gulp-util": "^3.0.7",
-    "ng-dependencies": "~0.3.0",
+    "ng-dependencies": "~0.7.0",
     "through2": "^2.0.0",
     "toposort": "~0.2.12"
   }
