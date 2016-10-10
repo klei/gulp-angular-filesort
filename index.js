@@ -78,6 +78,14 @@ module.exports = function angularFilesort() {
       }
     }
 
+    // Sort files alphabetically first to prevent random reordering.
+    // Reverse sorting as it is reversed later on.
+    files.sort(function (a, b) {
+        if(a.path.toLowerCase().replace(a.extname, '') < b.path.toLowerCase().replace(b.extname, '')) return 1;
+        if(a.path.toLowerCase().replace(a.extname, '') > b.path.toLowerCase().replace(b.extname, '')) return -1;
+        return 0;
+    });
+
     // Sort `files` with `toSort` as dependency tree:
     toposort.array(files, toSort)
       .reverse()

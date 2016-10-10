@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/klei/gulp-angular-filesort",
   "devDependencies": {
-    "chai": "~3.3.0",
-    "mocha": "~2.3.3"
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   },
   "dependencies": {
     "gulp-util": "^3.0.7",
-    "ng-dependencies": "~0.3.0",
+    "ng-dependencies": "^0.7.0",
     "through2": "^2.0.0",
-    "toposort": "~0.2.12"
+    "toposort": "^1.0.0"
   }
 }
