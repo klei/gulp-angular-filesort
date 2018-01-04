@@ -3,8 +3,7 @@
 var through = require('through2');
 var ngDep = require('ng-dependencies');
 var toposort = require('toposort');
-var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
+var PluginError = require('plugin-error');
 
 var PLUGIN_NAME = 'gulp-angular-filesort';
 var ANGULAR_MODULE = 'ng';

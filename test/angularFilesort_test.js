@@ -2,14 +2,14 @@
 /* global describe, it */
 var chai = require('chai'),
   should = chai.should(),
-  gutil = require('gulp-util'),
+  Vinyl = require('vinyl'),
   fs = require('fs'),
   path = require('path'),
   angularFilesort = require('../.');
 
 function fixture(file, config) {
   var filepath = path.join(__dirname, file);
-  return new gutil.File({
+  return new Vinyl({
     path: filepath,
     cwd: __dirname,
     base: __dirname,
