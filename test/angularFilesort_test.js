@@ -2,14 +2,14 @@
 /* global describe, it */
 var chai = require('chai'),
   should = chai.should(),
-  gutil = require('gulp-util'),
+  Vinyl = require('vinyl'),
   fs = require('fs'),
   path = require('path'),
   angularFilesort = require('../.');
 
 function fixture(file, config) {
   var filepath = path.join(__dirname, file);
-  return new gutil.File({
+  return new Vinyl({
     path: filepath,
     cwd: __dirname,
     base: __dirname,
@@ -60,9 +60,9 @@ describe('gulp-angular-filesort', function () {
 
     sort(files, function (resultFiles) {
       resultFiles.length.should.equal(7);
-      resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
-      resultFiles.indexOf('fixtures/yet-another.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
-      resultFiles.indexOf('fixtures/another-factory.js').should.be.above(resultFiles.indexOf('fixtures/another.js'));
+      resultFiles.indexOf(path.join('fixtures','module-controller.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','module.js')));
+      resultFiles.indexOf(path.join('fixtures','yet-another.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','another.js')));
+      resultFiles.indexOf(path.join('fixtures','another-factory.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','another.js')));
       done();
     })
   });
@@ -78,10 +78,10 @@ describe('gulp-angular-filesort', function () {
 
       sort(files, function (resultFiles) {
           resultFiles.length.should.equal(5);
-          resultFiles.indexOf('fixtures/module-controller.js').should.be.above(resultFiles.indexOf('fixtures/module.js'));
-          resultFiles.indexOf('fixtures/module.js').should.be.above(resultFiles.indexOf('fixtures/circular.js'));
-          resultFiles.indexOf('fixtures/circular3.js').should.be.above(resultFiles.indexOf('fixtures/circular2.js'));
-          resultFiles.indexOf('fixtures/circular3.js').should.be.above(resultFiles.indexOf('fixtures/circular.js'));
+          resultFiles.indexOf(path.join('fixtures','module-controller.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','module.js')));
+          resultFiles.indexOf(path.join('fixtures','module.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular.js')));
+          resultFiles.indexOf(path.join('fixtures','circular3.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular2.js')));
+          resultFiles.indexOf(path.join('fixtures','circular3.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular.js')));
           done();
       })
   });
@@ -93,7 +93,7 @@ describe('gulp-angular-filesort', function () {
 
     sort(files, function (resultFiles) {
       resultFiles.length.should.equal(1);
-      resultFiles[0].should.equal('fixtures/circular.js');
+      resultFiles[0].should.equal(path.join('fixtures','circular.js'));
       done();
     })
   });
@@ -106,8 +106,8 @@ describe('gulp-angular-filesort', function () {
 
     sort(files, function (resultFiles) {
       resultFiles.length.should.equal(2);
-      resultFiles.should.contain('fixtures/circular2.js');
-      resultFiles.should.contain('fixtures/circular3.js');
+      resultFiles.should.contain(path.join('fixtures','circular2.js'));
+      resultFiles.should.contain(path.join('fixtures','circular3.js'));
       done();
     })
   });
@@ -130,7 +130,7 @@ describe('gulp-angular-filesort', function () {
     ];
 
     sort(files, function (resultFiles) {
-      resultFiles.should.eql(['fixtures/empty.js'])
+      resultFiles.should.eql([path.join('fixtures','empty.js')])
       done();
     })
   });
