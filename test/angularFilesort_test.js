@@ -65,25 +65,7 @@ describe('gulp-angular-filesort', function () {
       resultFiles.indexOf(path.join('fixtures','another-factory.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','another.js')));
       done();
     })
-  });
 
-  it('should sort files alphabetically when no ordering is required', function (done) {
-      var files = [
-          fixture('fixtures/module.js'),
-          fixture('fixtures/circular3.js'),
-          fixture('fixtures/module-controller.js'),
-          fixture('fixtures/circular.js'),
-          fixture('fixtures/circular2.js'),
-      ];
-
-      sort(files, function (resultFiles) {
-          resultFiles.length.should.equal(5);
-          resultFiles.indexOf(path.join('fixtures','module-controller.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','module.js')));
-          resultFiles.indexOf(path.join('fixtures','module.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular.js')));
-          resultFiles.indexOf(path.join('fixtures','circular3.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular2.js')));
-          resultFiles.indexOf(path.join('fixtures','circular3.js')).should.be.above(resultFiles.indexOf(path.join('fixtures','circular.js')));
-          done();
-      })
   });
 
   it('should not crash when a module is both declared and used in the same file (Issue #5)', function (done) {
